@@ -6,6 +6,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p resultados
 
+# docker compose (v2) o docker-compose (v1), el que esté instalado
+if docker compose version >/dev/null 2>&1; then DC="docker compose"; else DC="docker-compose"; fi
 RED=globallogistics_default
 URL=http://balanceador/
 
@@ -13,7 +15,7 @@ ab() {  # ab <archivo> <peticiones> <concurrencia>
   echo ">> $1: $2 peticiones, $3 concurrentes"
   # Uso de CPU de los contenedores del TP a mitad de la prueba
   ( until docker inspect ab-carga >/dev/null 2>&1; do sleep 0.2; done; sleep 2; docker stats --no-stream --format 'table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}' \
-      $(docker compose ps -q) ab-carga > "resultados/$1-cpu.txt" ) &
+      $($DC ps -q) ab-carga > "resultados/$1-cpu.txt" ) &
   docker run --rm --name ab-carga --network "$RED" httpd:2.4-alpine \
     ab -k -n "$2" -c "$3" -s 30 "$URL" > "resultados/$1.txt"
   wait

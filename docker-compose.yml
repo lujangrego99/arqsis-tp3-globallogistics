@@ -1,5 +1,5 @@
 # Infraestructura como Código: 1 balanceador de carga (NGINX) + 3 réplicas del microservicio.
-# Levantar con: docker-compose up -d
+# Levantar con: docker-compose up -d   (nombre del proyecto en .env: globallogistics)
 
 x-envios: &envios
   build: ./envios
@@ -7,19 +7,14 @@ x-envios: &envios
   restart: unless-stopped
   expose:
     - "3000"
-  deploy:
-    resources:
-      limits:
-        cpus: "0.25"
-        memory: 128M
+  cpus: 0.25
+  mem_limit: 128m
   healthcheck:
     test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:3000/health"]
     interval: 5s
     timeout: 2s
     retries: 3
     start_period: 5s
-
-name: globallogistics
 
 services:
   envios-1: *envios

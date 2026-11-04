@@ -18,6 +18,7 @@ cliente ──► balanceador (NGINX :8080) ──► envios-2 (:3000)
 | Archivo | Contenido |
 |---|---|
 | `docker-compose.yml` | Manifiesto IaC: 1 balanceador + 3 réplicas, límites de CPU/memoria y health checks |
+| `.env` | Nombre del proyecto Compose (`globallogistics`), del que sale la red `globallogistics_default` |
 | `envios/server.js`, `envios/Dockerfile` | Microservicio (API REST): `GET /` (hostname) y `GET /health` |
 | `nginx/nginx.conf` | Balanceador: round robin + health checks pasivos (`max_fails` / `fail_timeout`) |
 | `pruebas/balanceo.sh` | Peticiones consecutivas al balanceador para ver la rotación de instancias |
@@ -26,7 +27,7 @@ cliente ──► balanceador (NGINX :8080) ──► envios-2 (:3000)
 
 ## Requisitos
 
-- Docker con Docker Compose.
+- Docker con Docker Compose. Funciona tanto con `docker-compose` (v1) como con `docker compose` (v2).
 - `curl` (para `pruebas/balanceo.sh`). `ab` **no** hace falta instalarlo: `pruebas/carga.sh` lo
   corre dentro de un contenedor `httpd:2.4-alpine` conectado a la red del compose.
 
