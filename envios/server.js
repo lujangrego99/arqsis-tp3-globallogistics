@@ -9,7 +9,10 @@ const INSTANCIA = os.hostname();
 
 function responder(res, status, body) {
   const json = JSON.stringify(body);
-  res.writeHead(status, { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(json) });
+  res.writeHead(status, {
+    "Content-Type": "application/json",
+    "Content-Length": Buffer.byteLength(json),
+  });
   res.end(json);
 }
 
