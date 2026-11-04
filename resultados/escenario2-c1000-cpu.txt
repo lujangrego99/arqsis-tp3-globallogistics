@@ -1,0 +1,6 @@
+NAME                            CPU %     MEM USAGE / LIMIT
+globallogistics-balanceador-1   109.90%   54.18MiB / 7.572GiB
+globallogistics-envios-1-1      24.70%    19.52MiB / 128MiB
+globallogistics-envios-2-1      25.76%    25.55MiB / 128MiB
+globallogistics-envios-3-1      24.58%    20.39MiB / 128MiB
+ab-carga                        27.67%    20.11MiB / 7.572GiB

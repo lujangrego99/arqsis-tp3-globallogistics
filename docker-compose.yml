@@ -1,0 +1,47 @@
+# Infraestructura como Código: 1 balanceador de carga (NGINX) + 3 réplicas del microservicio.
+# Levantar con: docker-compose up -d
+
+x-envios: &envios
+  build: ./envios
+  image: globallogistics/envios:1.0
+  restart: unless-stopped
+  expose:
+    - "3000"
+  deploy:
+    resources:
+      limits:
+        cpus: "0.25"
+        memory: 128M
+  healthcheck:
+    test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1:3000/health"]
+    interval: 5s
+    timeout: 2s
+    retries: 3
+    start_period: 5s
+
+name: globallogistics
+
+services:
+  envios-1: *envios
+  envios-2: *envios
+  envios-3: *envios
+
+  balanceador:
+    image: nginx:1.27-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      envios-1:
+        condition: service_healthy
+      envios-2:
+        condition: service_healthy
+      envios-3:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1/lb-health"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
